@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff7ec">
+  <title>年底聚餐怕變胖？｜互動簡報</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #513b35;
+      --muted: #8b7065;
+      --coral: #e77959;
+      --honey: #e6ad43;
+      --sage: #6f9a7c;
+      --paper: #fffcf5;
+      --peach: #ffead9;
+      --shadow: 0 20px 65px rgb(105 72 52 / 12%);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 12% 8%, #fff0d8 0, transparent 36%),
+                  radial-gradient(ellipse at 88% 90%, #f7e6d5 0, transparent 38%),
+                  #f6eee3;
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+    }
+    button { font: inherit; }
+    .deck {
+      width: min(1180px, calc(100vw - 44px));
+      height: min(700px, calc(100dvh - 92px));
+      min-height: 440px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .deck::before {
+      content: "";
+      height: 12px;
+      position: absolute;
+      z-index: 5;
+      inset: 0 0 auto;
+      background: linear-gradient(90deg, var(--coral), var(--honey) 55%, #9cb38a);
+    }
+    .slide {
+      position: absolute;
+      inset: 12px 0 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 210px;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 20px 34px;
+      padding: clamp(38px, 6vw, 72px) clamp(34px, 7vw, 86px) 78px;
+      background: linear-gradient(0deg, #fffcf5, #fff8ee);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(42px) scale(.99);
+      transition: opacity .42s ease, transform .48s cubic-bezier(.2,.75,.25,1), visibility .42s;
+      pointer-events: none;
+    }
+    .slide.active {
+      z-index: 2;
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+    .slide.leaving-left { transform: translateX(-42px) scale(.99); opacity: 0; }
+    .slide.leaving-right { transform: translateX(42px) scale(.99); opacity: 0; }
+    .slide.leaving-left, .slide.leaving-right { z-index: 1; visibility: visible; pointer-events: none; }
+    .slide.cover, .slide.closing {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, #fff0d8 0%, #ffe5d4 58%, #fbe8d6 100%);
+    }
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--coral);
+      font-size: clamp(14px, 1.7vw, 19px);
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    h1, h2, p { margin-top: 0; }
+    h1 {
+      max-width: 760px;
+      margin-bottom: 16px;
+      font-size: clamp(37px, 5.5vw, 60px);
+      line-height: 1.2;
+      letter-spacing: .01em;
+    }
+    h2 {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      align-self: end;
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(27px, 3.6vw, 40px);
+      line-height: 1.3;
+    }
+    .subtitle {
+      margin: 8px 0 20px;
+      color: var(--coral);
+      font-size: clamp(21px, 2.7vw, 31px);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .tagline { color: var(--muted); font-size: clamp(17px, 2vw, 22px); }
+    .rule {
+      grid-row: 2;
+      grid-column: 1;
+      width: 74px;
+      height: 5px;
+      margin: 4px 0 0;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--coral), var(--honey), var(--sage));
+    }
+    .points {
+      grid-column: 1;
+      grid-row: 3;
+      align-self: center;
+      display: grid;
+      gap: clamp(22px, 4vh, 38px);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .points li {
+      position: relative;
+      padding-left: 34px;
+      font-size: clamp(18px, 2.25vw, 25px);
+      line-height: 1.65;
+    }
+    .points li::before {
+      content: "";
+      position: absolute;
+      top: .65em;
+      left: 0;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 0 5px rgb(231 121 89 / 10%);
+    }
+    .points li:nth-child(even)::before { background: var(--honey); box-shadow: 0 0 0 5px rgb(230 173 67 / 13%); }
+    .illustration {
+      grid-column: 2;
+      grid-row: 3;
+      align-self: center;
+      justify-self: center;
+      display: grid;
+      place-items: center;
+      width: 148px;
+      height: 148px;
+      border-radius: 44% 56% 57% 43% / 47% 39% 61% 53%;
+      background: linear-gradient(140deg, #ffe4bc, #ffefdb);
+      font-size: clamp(70px, 9vw, 100px);
+      filter: drop-shadow(0 12px 8px rgb(129 81 48 / 10%));
+      animation: bob 3.6s ease-in-out infinite;
+    }
+    .source {
+      grid-column: 1 / -1;
+      grid-row: 4;
+      align-self: end;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .cover-art {
+      position: absolute;
+      top: 50%;
+      right: clamp(42px, 12vw, 150px);
+      transform: translateY(-45%);
+      font-size: clamp(100px, 16vw, 170px);
+      filter: drop-shadow(0 16px 10px rgb(129 81 48 / 12%));
+      animation: bob 3.6s ease-in-out infinite;
+    }
+    .cover-fruit { position: absolute; right: 14%; top: 65%; font-size: 58px; animation: bob 3s ease-in-out infinite reverse; }
+    .cover-copy { position: relative; z-index: 1; max-width: 760px; }
+    .cover .rule { width: 146px; margin: 26px 0 22px; }
+    .cover-list { font-size: clamp(17px, 2vw, 22px); font-weight: 700; }
+    .small-note { position: absolute; left: clamp(34px, 7vw, 86px); bottom: 36px; margin: 0; color: var(--muted); font-size: 14px; }
+    .closing { align-items: center; text-align: center; }
+    .closing h2 { margin: 0 0 24px; font-size: clamp(44px, 7vw, 68px); }
+    .closing .tagline { color: var(--coral); }
+    .heart { margin: 22px 0 10px; font-size: 86px; animation: pulse 1.8s ease-in-out infinite; }
+    .food-row { font-size: 34px; letter-spacing: .7em; }
+    .nav {
+      position: absolute;
+      z-index: 10;
+      right: 22px;
+      bottom: 18px;
+      left: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      pointer-events: none;
+    }
+    .nav > * { pointer-events: auto; }
+    .nav-cluster { display: flex; align-items: center; gap: 10px; }
+    .nav-button, .dot {
+      border: 0;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+    .nav-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgb(105 72 52 / 12%);
+      font-size: 22px;
+    }
+    .nav-button:hover:not(:disabled) { transform: translateY(-2px); background: var(--coral); color: #fff; }
+    .nav-button:disabled { cursor: default; opacity: .4; }
+    .dots { display: flex; align-items: center; gap: 7px; }
+    .dot { width: 9px; height: 9px; border-radius: 99px; padding: 0; background: #d9c7b8; }
+    .dot.active { width: 25px; background: var(--coral); }
+    .page-count { min-width: 58px; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; text-align: center; }
+    .key-hint { position: absolute; top: 25px; right: 28px; z-index: 4; color: #a48778; font-size: 12px; }
+    button:focus-visible { outline: 3px solid #795bd6; outline-offset: 3px; }
+    @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -9px; } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    @media (max-width: 700px) {
+      .deck { width: calc(100vw - 20px); height: calc(100dvh - 28px); min-height: 440px; border-radius: 18px; }
+      .slide { grid-template-columns: 1fr 82px; gap: 14px 8px; padding: 48px 24px 80px; }
+      .slide h2 { grid-column: 1 / -1; }
+      .points { grid-column: 1 / -1; grid-row: 3; align-self: start; gap: 18px; }
+      .points li { padding-left: 25px; font-size: clamp(17px, 4.2vw, 21px); line-height: 1.5; }
+      .points li::before { width: 10px; height: 10px; }
+      .illustration { grid-column: 2; grid-row: 2; width: 58px; height: 58px; font-size: 40px; align-self: start; }
+      .source { font-size: 12px; max-width: calc(100% - 70px); }
+      .key-hint { display: none; }
+      .cover-art { top: auto; right: 10%; bottom: 17%; transform: none; font-size: 100px; opacity: .9; }
+      .cover-fruit { top: auto; right: 9%; bottom: 10%; font-size: 42px; }
+      .cover-list { max-width: 70%; line-height: 1.7; }
+      .nav { right: 12px; left: 12px; bottom: 12px; }
+      .nav-button { width: 40px; height: 40px; }
+      .dots { gap: 5px; }
+      .dot { width: 7px; height: 7px; }
+      .dot.active { width: 19px; }
+    }
+    @media (max-height: 560px) and (min-width: 701px) {
+      .deck { height: calc(100dvh - 24px); min-height: 0; }
+      .slide { padding-top: 40px; padding-bottom: 66px; gap: 10px 24px; }
+      .points { gap: 14px; }
+      .points li { font-size: 19px; line-height: 1.4; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck" aria-label="年底聚餐飲食調整互動簡報">
+    <div class="key-hint" aria-hidden="true">← → 切換　Home / End 跳頁</div>
+    <section class="slide cover active" aria-label="第 1 頁：封面" aria-hidden="false">
+      <div class="cover-copy">
+        <p class="eyebrow">年末聚餐與體重管理</p>
+        <h1>年底聚餐怕變胖？</h1>
+        <p class="subtitle">大餐前後的 4 大飲食調整策略</p>
+        <p class="tagline">享受聚餐，也照顧自己的飲食節奏</p>
+        <div class="rule" aria-hidden="true"></div>
+        <p class="cover-list">聚餐前｜聚餐中｜聚餐後｜長期觀察</p>
+      </div>
+      <span class="cover-art" aria-hidden="true">🍲</span><span class="cover-fruit" aria-hidden="true">🍊</span>
+      <p class="small-note">暖心飲食分享</p>
+    </section>
+    <section class="slide" aria-label="第 2 頁：年底聚餐後的體重波動" aria-hidden="true">
+      <h2>年底聚餐後的體重波動</h2><div class="rule" aria-hidden="true"></div>
+      <ul class="points"><li>大餐隔天體重上升，可能來自鈉與水分、肝醣儲水，以及尚未消化的食物。</li><li>短期體重波動不等於同重量的脂肪增加。</li><li>體重管理應觀察一段時間的整體飲食與體重趨勢。</li></ul>
+      <div class="illustration" aria-hidden="true">🍽️</div><p class="source">來源：《過年.txt》</p>
+    </section>
+    <section class="slide" aria-label="第 3 頁：大餐前" aria-hidden="true">
+      <h2>大餐前｜留點彈性，不要餓肚子</h2><div class="rule" aria-hidden="true"></div>
+      <ul class="points"><li>白天選油脂較少、含蛋白質與蔬菜的餐點，適度減少烹調油、醬料或點心。</li><li>維持基本營養攝取，不必跳過早餐或午餐。</li><li>若聚餐較晚，可先吃無糖豆漿、優格或水果等小點心。</li></ul>
+      <div class="illustration" aria-hidden="true">🍎</div><p class="source">來源：《過年.txt》</p>
+    </section>
+    <section class="slide" aria-label="第 4 頁：大餐當下" aria-hidden="true">
+      <h2>大餐當下｜享受美食，也留意飽足感</h2><div class="rule" aria-hidden="true"></div>
+      <ul class="points"><li>喜歡的料理可以享用，也搭配蔬菜與蛋白質食物。</li><li>放慢進食速度，留意飽足感；不必勉強吃完。</li><li>優先選真正想吃的料理，不必抱著「吃回本」的心態。</li></ul>
+      <div class="illustration" aria-hidden="true">🥢</div><p class="source">來源：《過年.txt》</p>
+    </section>
+    <section class="slide" aria-label="第 5 頁：大餐後" aria-hidden="true">
+      <h2>大餐後｜回到均衡飲食，適度調整</h2><div class="rule" aria-hidden="true"></div>
+      <ul class="points"><li>適度減少額外油脂、醬料或點心，同時保留蛋白質、蔬菜與適量澱粉。</li><li>維持平常飲水，適度減少高鈉加工食品、重口味醬料與湯品。</li><li>維持原有運動，也可散步或快走；不必用高強度或長時間運動補償。</li></ul>
+      <div class="illustration" aria-hidden="true">🥗</div><p class="source">來源：《過年.txt》；飲水建議參考《新增 文字文件.txt》</p>
+    </section>
+    <section class="slide" aria-label="第 6 頁：長期趨勢" aria-hidden="true">
+      <h2>看長期趨勢，聚餐與管理可以並行</h2><div class="rule" aria-hidden="true"></div>
+      <ul class="points"><li>維持平常的測量習慣，以一段時間的平均體重與整體趨勢看變化。</li><li>若平均體重持續偏離原本目標，再檢視飲食與活動量。</li><li>偶爾吃得較多，不需要挨餓或大量運動補償。</li></ul>
+      <div class="illustration" aria-hidden="true">🌿</div><p class="source">來源：《過年.txt》</p>
+    </section>
+    <section class="slide closing" aria-label="第 7 頁：謝謝聆聽" aria-hidden="true">
+      <h2>謝謝聆聽</h2><p class="tagline">祝妳自在享受聚餐，從容照顧日常飲食</p><div class="heart" aria-hidden="true">💛</div><div class="food-row" aria-hidden="true">🍊　🍲　🥗</div><p class="small-note">資料來源：《過年.txt》</p>
+    </section>
+    <nav class="nav" aria-label="簡報頁面導覽">
+      <div class="nav-cluster">
+        <button class="nav-button" id="prev" type="button" aria-label="上一頁" title="上一頁（←）" disabled>‹</button>
+        <button class="nav-button" id="next" type="button" aria-label="下一頁" title="下一頁（→）">›</button>
+        <span class="page-count" id="pageCount" aria-live="polite">01 / 07</span>
+      </div>
+      <div class="dots" id="dots" aria-label="直接跳至頁面"></div>
+    </nav>
+  </main>
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const dots = document.querySelector('#dots');
+      const prev = document.querySelector('#prev');
+      const next = document.querySelector('#next');
+      const pageCount = document.querySelector('#pageCount');
+      let current = 0;
+      let animating = false;
+
+      slides.forEach((slide, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `前往第 ${index + 1} 頁`);
+        dot.setAttribute('aria-current', index === 0 ? 'page' : 'false');
+        dot.addEventListener('click', () => goTo(index));
+        dots.append(dot);
+      });
+
+      function updateControls() {
+        prev.disabled = current === 0;
+        next.disabled = current === slides.length - 1;
+        pageCount.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+        [...dots.children].forEach((dot, index) => {
+          const active = index === current;
+          dot.classList.toggle('active', active);
+          dot.setAttribute('aria-current', active ? 'page' : 'false');
+        });
+      }
+
+      function goTo(index) {
+        if (animating || index === current || index < 0 || index >= slides.length) return;
+        animating = true;
+        const direction = index > current ? 'left' : 'right';
+        const oldSlide = slides[current];
+        const newSlide = slides[index];
+        oldSlide.classList.remove('active');
+        oldSlide.classList.add(`leaving-${direction}`);
+        newSlide.classList.remove('leaving-left', 'leaving-right');
+        newSlide.style.transform = direction === 'left' ? 'translateX(42px) scale(.99)' : 'translateX(-42px) scale(.99)';
+        newSlide.style.visibility = 'visible';
+        newSlide.style.zIndex = '3';
+        newSlide.setAttribute('aria-hidden', 'false');
+        oldSlide.setAttribute('aria-hidden', 'true');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          newSlide.classList.add('active');
+          newSlide.style.transform = '';
+        }));
+        current = index;
+        updateControls();
+        window.setTimeout(() => {
+          oldSlide.classList.remove(`leaving-${direction}`);
+          newSlide.style.zIndex = '';
+          newSlide.style.visibility = '';
+          animating = false;
+        }, 500);
+      }
+
+      prev.addEventListener('click', () => goTo(current - 1));
+      next.addEventListener('click', () => goTo(current + 1));
+      window.addEventListener('keydown', (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+          event.preventDefault(); goTo(current + 1);
+        } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+          event.preventDefault(); goTo(current - 1);
+        } else if (event.key === 'Home') {
+          event.preventDefault(); goTo(0);
+        } else if (event.key === 'End') {
+          event.preventDefault(); goTo(slides.length - 1);
+        }
+      });
+      updateControls();
+    })();
+  </script>
+</body>
+</html>
